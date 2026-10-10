@@ -1,0 +1,16 @@
+# Build folders
+cmake-build-debug/
+cmake-build-release/
+build/
+CMakeLists.txt
+
+# Compiled binaries
+*.exe
+*.o
+*.obj
+
+# Python cache
+__pycache__/
+
+# CLion junk
+.idea/
