@@ -20,6 +20,10 @@ bool Agent::want_to_make_bid(State& state) {
     return (state.current_bid + this->raise_amount) <= capital * Config::MAX_BID_THRESHOLD;
 }
 
+void Agent::bid_msg(State& state) {
+    std::cout << "Bid: " << "(" << this->name << ", " << Config::CURRENCY << state.current_bid << ")\n";
+}
+
 void Agent::run(Auctioneer& auction) {
     std::unique_lock<std::mutex> lock(auction.state_mutex);
 
@@ -54,7 +58,7 @@ void Agent::run(Auctioneer& auction) {
             auction.state.current_bid += this->raise_amount;
             auction.state.highest_bidder = this;
 
-            std::cout << "Bid: " << "(" << this->name << ", " << Config::CURRENCY << auction.state.current_bid << ")\n";
+            bid_msg(auction.state);
 
             auction.state_cv.notify_all();
         }
@@ -62,9 +66,9 @@ void Agent::run(Auctioneer& auction) {
 }
 
 int Agent::get_response_time() {
- std::random_device rd;
- std::mt19937 gen(rd());
+    std::random_device rd;
+    std::mt19937 gen(rd());
 
- std::uniform_int_distribution<int> distrib(1000, 4000);
- return distrib(gen);
+    std::uniform_int_distribution<int> distrib(1000, 4000);
+    return distrib(gen);
 }

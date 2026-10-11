@@ -22,7 +22,13 @@ public:
 
     void begin_auction(Item& item, std::vector<Agent>& agents);
 
-    void begin_auction(std::vector<Item> items, std::vector<Agent>& agents);
+    void start(std::vector<Item> items, std::vector<Agent>& agents);
+
+    void pre_brief_msg();
+
+    void auction_ending_msg();
+
+    void auction_beginning_msg();
 };
 
 

@@ -19,6 +19,8 @@ public:
 
     Agent(std::string name, double capital, double raise_amount);
 
+    void bid_msg(State& state);
+
 private:
     double capital {};
     double raise_amount {};

@@ -16,7 +16,7 @@ int main() {
     std::vector agents {tom, joe, ben};
 
     Auctioneer auctioneer {};
-    auctioneer.begin_auction(item1, agents);
+    auctioneer.start(items, agents);
 
     return 0;
 };
