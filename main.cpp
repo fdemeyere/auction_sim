@@ -1,70 +1,86 @@
 #include <iostream>
 #include <vector>
+#include <chrono>
+#include <thread>
+#include <random>
 
 struct Agent;
 struct Item;
 struct Auctioneer;
+struct State;
 
 struct Item {
     std::string name {};
     double value {};
 };
 
+struct State {
+    Item current_item {};
+    double current_bid {};
+    Agent* highest_bidder {};
+};
+
 struct Agent {
     std::string name {};
     double capital {};
+    double raise_amount {};
+    double response_time {};
 
-    bool want_to_make_bid(Item& item, double next_bid) {
-        return next_bid <= capital * 0.8;
+    Agent(std::string name, double capital, double raise_amount) {
+        this->name = name;
+        this->capital = capital;
+        this->raise_amount = raise_amount;
+    }
+
+    bool want_to_make_bid(State state) {
+        return (state.current_bid + this->raise_amount) <= capital * 0.8;
     }
 };
 
 struct Auctioneer {
 public:
-    double raise_amount {50};
+    State state {};
 
     void begin_auction(Item& item, std::vector<Agent>& agents) {
 
         // Starting price below market value
-        double current_bid {item.value * 0.7};
-        Agent* highest_bidder {};
+        state.current_item = item;
+        state.current_bid = item.value * 0.7;
 
-        std::cout << "Starting price " << current_bid << "\n";
+        std::cout << "Starting price " << state.current_bid << "\n";
 
         bool new_round {true};
         while (new_round) {
             new_round = false;
 
             for (Agent& agent : agents) {
-                if (&agent == highest_bidder) {
+                if (&agent == state.highest_bidder) {
                     continue;
                 }
 
-                if (agent.want_to_make_bid(item, current_bid + raise_amount)) {
-                    current_bid += raise_amount;
-                    highest_bidder = &agent;
+                if (agent.want_to_make_bid(state)) {
+                    state.current_bid += agent.raise_amount;
+                    state.highest_bidder = &agent;
 
                     new_round = true;
-                    std::cout << "Bid: " << (*highest_bidder).name << ", " << current_bid << "\n";
+                    std::cout << "Bid: " << (*state.highest_bidder).name << ", " << state.current_bid << "\n";
                 }
             }
         }
-        std::cout << "Resulting bid: " << current_bid << "\n";
-        std::cout << "Highest bidder " << (*highest_bidder).name;
+        std::cout << "Resulting bid: " << state.current_bid << "\n";
+        std::cout << "Highest bidder " << (*state.highest_bidder).name;
     }
-private:
 };
 
-
-// TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 int main() {
     Item item {"vase", 200};
     Auctioneer auctioneer {};
-    Agent frank {"frank", 1000};
-    Agent joe {"joe", 2000};
+    Agent tom {"tom", 1800, 20};
+    Agent joe {"joe", 2000, 20};
+    Agent ben {"ben", 1600, 20};
 
-    std::vector agents {frank, joe};
+    std::vector agents {tom, joe, ben};
     auctioneer.begin_auction(item, agents);
 
-    return EXIT_SUCCESS;
+    return 0;
 }
