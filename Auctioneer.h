@@ -29,6 +29,8 @@ public:
     void auction_ending_msg();
 
     void auction_beginning_msg();
+private:
+    std::string get_time_string(int forw_offset_sec);
 };
 
 
