@@ -10,6 +10,12 @@
 struct Item {
     std::string name {};
     double value {};
+
+    enum Categories {
+        Painting,
+        Furniture,
+        NFT,
+    };
 };
 
 
